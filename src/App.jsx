@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ethers } from 'ethers';
+import LearningDashboard from './LearningDashboard';
 
 function App() {
   const [walletAddress, setWalletAddress] = useState(null);
@@ -37,6 +38,9 @@ function App() {
       {error && (
         <p style={{ color: "red" }}>{error}</p>
       )}
+
+      {/* 👇 Pass wallet address into dashboard */}
+      <LearningDashboard walletAddress={walletAddress} />
     </div>
   );
 }
