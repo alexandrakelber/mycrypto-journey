@@ -1,35 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import { ethers } from 'ethers';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [walletAddress, setWalletAddress] = useState(null);
+  const [error, setError] = useState(null);
+
+  async function connectWallet() {
+    if (!window.ethereum) {
+      setError("Please install MetaMask to use this app.");
+      return;
+    }
+
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum);
+      const accounts = await provider.send("eth_requestAccounts", []);
+      setWalletAddress(accounts[0]);
+      setError(null); // Clear error if successful
+    } catch (err) {
+      setError("Wallet connection failed.");
+    }
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div style={{ padding: "2rem" }}>
+      <h1>🚀 MyCrypto Journey</h1>
+      <p>Learn Web3 interactively.</p>
+
+      <button onClick={connectWallet}>
+        {walletAddress ? "Wallet Connected ✅" : "Connect Wallet"}
+      </button>
+
+      {walletAddress && (
+        <p><strong>Address:</strong> {walletAddress}</p>
+      )}
+
+      {error && (
+        <p style={{ color: "red" }}>{error}</p>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
